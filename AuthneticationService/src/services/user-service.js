@@ -17,8 +17,10 @@ class UserService{
             const user = await this.userRepository.create(data);
             return user;
         } catch (error) {
-            console.log("Something went wrong on Service Layer!!");
-            throw {error};
+            if(error.name = "SequelizeValidationError"){
+                throw error;
+             }
+             throw error;
         }
 
     }
@@ -28,7 +30,7 @@ class UserService{
             const user = await this.userRepository.getByEmail(userEmail);
             if(!this.isComparePassword(plainPassword,user.password)){
                 console.log("Password incorrect!!");
-                throw {error};
+                throw error;
             }
 
             const jwtToken = this.createToken({email:userEmail,id:user.id});
@@ -87,6 +89,17 @@ class UserService{
         } catch (error) {
             console.log("Something went wrong on password checking!!");
             throw error;
+        }
+    }
+
+
+    async isAdmin(userId){
+        try {
+           const response = await this.userRepository.isAdmin(userId);
+           return response;
+        } catch (error) {
+            throw error;
+            console.log("Something went wrong on admin verifition!!");
         }
     }
 

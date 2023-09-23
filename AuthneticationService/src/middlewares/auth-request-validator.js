@@ -12,7 +12,22 @@ const validatedUserAuth = (req,res,next) => {
     next();
 };
 
+const validateAdminRequest = (req,res,next) => {
+    if (!req.body.id){
+        return res.status(400).json(
+            {
+                data:{},
+                err:"Incorrect Request data!!",
+                message:"Incorrect Request data!!",
+                isSuccess:false
+            }
+
+        );
+    }
+    next();
+};
 
 module.exports = {
-    validatedUserAuth
+    validatedUserAuth,
+    validateAdminRequest
 }

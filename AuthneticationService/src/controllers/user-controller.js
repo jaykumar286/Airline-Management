@@ -1,4 +1,6 @@
 const {response} = require("express");
+const {StatusCodes} = require("http-status-codes");
+
 const UserService = require("../services/user-service");
 
 const userService = new UserService();
@@ -9,7 +11,7 @@ const create = async (req,res) =>{
             email:req.body.email,
             password:req.body.password
         });
-        return res.status(201).json(
+        return res.status(StatusCodes.OK).json(
             {
                 data:userData,
                 err:{},
@@ -19,7 +21,7 @@ const create = async (req,res) =>{
         );
         
     } catch (error) {
-        return res.status(500).json({
+        return res.status(error.statusCode).json({
             data:{},
             err:{error},
             message:"something went wrong",
@@ -75,8 +77,34 @@ const isAuthenticate = async (req,res) => {
     }
 }
 
+const isAdmin =async (req,res) => {
+    try {
+        const response = await userService.isAdmin(req.body.id);
+        return res.status(200).json(
+            {
+                data:response,
+                err:{},
+                message:"Succefull in isAdmin!!",
+                isSuccess:true
+            }
+        );
+    } catch (error) {
+        console.log("Unsuccefull in isAdmin!!");
+        return res.status(404).json(
+            {
+                data:{},
+                err:"Unsuccefull in isAdmin!!",
+                message:"Unsuccefull in isAdmin!!",
+                isSuccess:false
+            }
+
+        );
+    }
+};
+
 module.exports = {
     create,
     signin,
+    isAdmin,
     isAuthenticate
 }
