@@ -17,14 +17,25 @@ class BookingReposirory {
         "Some issue with booking,try again later!!",
         StatusCodes.INTERNAL_SERVER_ERROR
       );
+      
     }
   }
 
-  async update(data){
+  async update(bookingId,data){
     try {
-        
+        await Booking.update(data,{
+          where:{
+            id:bookingId
+          }
+        })
+        return true;
     } catch (error) {
-        
+      throw AppError(
+        "RepositoryError",
+        "Can not update booking",
+        "Some issue with updating a booking,try again later!!",
+        StatusCodes.INTERNAL_SERVER_ERROR
+      );
     }
 
   }
