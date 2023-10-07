@@ -30,11 +30,15 @@ const fetchPendingEmail =async (timeStamp) => {
 const createNotification = async (data) => {
     try {
         const response = await repo.create(data);
+        console.log(data);
         return response
     } catch (error) {
+        console.log(error)
         console.log("Error on creating email");
     }
 }
+
+
 const updateTicket = async(ticketId,data) => {
     try {
         const response = await repo.update(ticketId,data);
@@ -43,9 +47,28 @@ const updateTicket = async(ticketId,data) => {
         console.log("Error on creating email");
     }
 };
+
+const subscribeEvent = async(payload) => {
+    let service = payload.service;
+    let data = payload.data;
+
+    switch(service){
+        case "CREATE_TICKET" : 
+            await createNotification(data);
+            break;
+        case "SEND_BASIC_MAIL":
+            await sendBasicEmail();
+            break;
+        default:
+            console.log("No valid event!!");
+            break;
+    }
+};
+
 module.exports = {
     sendBasicEmail,
     fetchPendingEmail,
     createNotification,
-    updateTicket
+    updateTicket,
+    subscribeEvent
 }
